@@ -1,15 +1,28 @@
-import express, { Request, Response } from 'express';
+import * as dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
+import cors from "cors";
+
+import router from "./router";
+import mongoose from "mongoose";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello from Express + TypeScript + Vercel!');
-});
+// Cors handling
+app.use(cors());
 
-app.get('/api', (req: Request, res: Response) => {
-  res.json({ message: 'This is an API endpoint' });
-});
+// Parse incoming requests body for application/json
+app.use(express.json());
+
+// Mongoose setup
+mongoose.Promise = Promise;
+mongoose.connect(process.env.DATABASE_URL!);
+mongoose.connection.on('error', (error: Error) => { console.log(error) });
+
+// Router (this routes the requests)
+app.use("/", router());
 
 // Export for Vercel
 export default app;
