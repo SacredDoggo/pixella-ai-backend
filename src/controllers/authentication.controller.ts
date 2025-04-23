@@ -4,30 +4,34 @@ dotenv.config();
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import * as _ from "lodash";
 
-import { createUser, getUserByEmail, getUserByUsername } from "../db/users";
+import { createUser, getUserByEmail, getUserByUsername } from "../db/users.db";
 
-// TODO: Change explicit any
-export const register = async (req: express.Request, res: express.Response): Promise<any> => {
+export const register: express.RequestHandler = async (req: express.Request, res: express.Response) => {
     try {
         if (!req.body) {
-            return res.status(400).json({ error: "Bad Request: No body found" });
+            res.status(400).json({ error: "Bad Request: No body found" });
+            return;
         }
 
         const { username, email, password } = req.body;
 
         if (!username || !email || !password) {
-            res.status(400).json({ error: "Arguments missing!" })
+            res.status(400).json({ error: "Arguments missing!" });
+            return;
         }
 
         const existingUserEmail = await getUserByEmail(email);
         if (existingUserEmail) {
-            return res.status(409).json({ error: "Email already exists." });
+            res.status(409).json({ error: "Email already exists." });
+            return;
         }
 
         const existingUsername = await getUserByUsername(username);
         if (existingUsername) {
-            return res.status(409).json({ error: "Username already taken." });
+            res.status(409).json({ error: "Username already taken." });
+            return;
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -42,17 +46,20 @@ export const register = async (req: express.Request, res: express.Response): Pro
             }
         });
 
-        return res.status(200).json(user).end();
+        res.status(200).json(_.omit(user, "authentication")).end();
+        return;
     } catch (error) {
         console.error(error);
-        return res.sendStatus(500);
+        res.sendStatus(500);
+        return;
     }
 }
 
-export const login = async (req: express.Request, res: express.Response): Promise<any> => {
+export const login: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         if (!req.body) {
-            return res.status(400).json({ error: "Bad Request: No body found" });
+            res.status(400).json({ error: "Bad Request: No body found" });
+            return;
         }
 
         const { username, email, password } = req.body;
@@ -73,8 +80,8 @@ export const login = async (req: express.Request, res: express.Response): Promis
 
 
         if (!user || !(user?.authentication?.password && await bcrypt.compare(password, user.authentication.password))) {
-
-            return res.status(404).json({ error: "Invaid credentials!" });
+            res.status(404).json({ error: "Invaid credentials!" });
+            return;
         }
 
         const token = jwt.sign(
@@ -87,9 +94,11 @@ export const login = async (req: express.Request, res: express.Response): Promis
             { expiresIn: "7d" }
         )
 
-        return res.status(200).json(token).end();
+        res.status(200).json(token).end();
+        return;
     } catch (error) {
         console.error(error);
-        return res.sendStatus(500);
+        res.sendStatus(500);
+        return;
     }
 }

@@ -22,7 +22,7 @@ mongoose.connect(process.env.DATABASE_URL!);
 mongoose.connection.on('error', (error: Error) => { console.log(error) });
 
 // Router (this routes the requests)
-app.use("/", router());
+app.use("/api/v1/", router());
 
 // Export for Vercel
 export default app;
