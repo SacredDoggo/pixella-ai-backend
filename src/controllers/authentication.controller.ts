@@ -10,6 +10,7 @@ import { createUser, getUserByEmail, getUserByUsername } from "../db/users.db";
 
 export const register: express.RequestHandler = async (req: express.Request, res: express.Response) => {
     try {
+        // Check if there is an request body
         if (!req.body) {
             res.status(400).json({ error: "Bad Request: No body found" });
             return;
