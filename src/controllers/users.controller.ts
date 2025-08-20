@@ -2,7 +2,7 @@ import express from "express";
 
 import { prisma } from "../config/prisma";
 
-export const get_all_users: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+export const getAllUsers: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         const users = await prisma.user.findMany();
         res.status(200).json(users).end();
@@ -14,7 +14,7 @@ export const get_all_users: express.RequestHandler = async (req: express.Request
     }
 }
 
-export const get_user_by_id: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+export const getUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         const userId = req.params.id;
 
@@ -36,7 +36,7 @@ export const get_user_by_id: express.RequestHandler = async (req: express.Reques
     }
 }
 
-export const update_user_by_id: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+export const updateUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         const userId = req.params.id;
 
@@ -69,7 +69,7 @@ export const update_user_by_id: express.RequestHandler = async (req: express.Req
     }
 }
 
-export const delete_user_by_id: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+export const deleteUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         const userId = req.params.id;
 
