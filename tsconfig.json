@@ -1,13 +1,23 @@
 {
-    "compilerOptions": {
-      "target": "ES6",
-      "module": "CommonJS",
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true
-    },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "dist"]
-  }
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": ".",
+    "resolveJsonModule": true,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src/**/*"
+, "api/index.ts"  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

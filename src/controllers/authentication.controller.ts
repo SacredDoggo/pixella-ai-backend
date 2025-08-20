@@ -4,9 +4,8 @@ dotenv.config();
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import * as _ from "lodash";
 
-import { createUser, getUserByEmail, getUserByUsername } from "../db/users.db";
+import { prisma } from "../config/prisma";
 
 export const register: express.RequestHandler = async (req: express.Request, res: express.Response) => {
     try {
@@ -23,31 +22,34 @@ export const register: express.RequestHandler = async (req: express.Request, res
             return;
         }
 
-        const existingUserEmail = await getUserByEmail(email);
-        if (existingUserEmail) {
-            res.status(409).json({ error: "Email already exists." });
+        // Check if user already exists
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                OR: [{ email }, { username }],
+            },
+        });
+
+        if (existingUser) {
+            res.status(409).json({ error: "User already exists!" });
             return;
         }
 
-        const existingUsername = await getUserByUsername(username);
-        if (existingUsername) {
-            res.status(409).json({ error: "Username already taken." });
-            return;
-        }
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const user = await createUser({
-            email,
-            username,
-            authentication: {
-                password: hashedPassword,
-                salt
+        // Create user and password hash in a transaction
+        const user = await prisma.user.create({
+            data: {
+                username,
+                email,
+                password: {
+                    create: {
+                        hash: hashedPassword,
+                    },
+                },
             }
         });
 
-        res.status(200).json(_.omit(user, "authentication")).end();
+        res.sendStatus(201);
         return;
     } catch (error) {
         console.error(error);
@@ -63,24 +65,22 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
             return;
         }
 
-        const { username, email, password } = req.body;
+        const { identifier, password } = req.body;
 
-        if (!(username || email) || !password) {
+        if (!identifier || !password) {
             res.status(400).json({ error: "Arguments missing!" })
         }
 
-        const getUser = async () => {
-            if (email) {
-                return await getUserByEmail(email).select("+authentication.salt +authentication.password");;
-            } else {
-                return await getUserByUsername(username).select("+authentication.salt +authentication.password");;
-            }
-        }
-
-        const user = await getUser();
+        // Find user by username or email, including their password hash
+        const user = await prisma.user.findFirst({
+            where: {
+                OR: [{ username: identifier }, { email: identifier }],
+            },
+            include: { password: true },
+        });
 
 
-        if (!user || !(user?.authentication?.password && await bcrypt.compare(password, user.authentication.password))) {
+        if (!user || !(user.password?.hash && await bcrypt.compare(password, user.password.hash))) {
             res.status(404).json({ error: "Invaid credentials!" });
             return;
         }

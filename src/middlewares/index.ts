@@ -2,20 +2,18 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
-import { JwtPayload } from "../types/jwt";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const validateId: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
         const id = req.params.id;
-
+        
         // Check if the ID is a valid ObjectId
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!(typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id))) {
             res.status(400).json({ error: "Invalid ID" });
-            return;
+            return;        
         }
-
+        
         next();
     } catch (error) {
         res.sendStatus(500);
@@ -25,18 +23,30 @@ export const validateId: express.RequestHandler = async (req: express.Request, r
 
 export const isAuthenticated: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
+        // Get token from Authorization header: "Bearer <token>"
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1]; // Get the part after "Bearer"
 
         if (!token) {
-            res.sendStatus(401);
+            res.status(401).json({ message: "Unauthorized: No token provided" });
             return;
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+        jwt.verify(token, process.env.JWT_SECRET!, (err, user) => {
+            if (err || !(user && typeof user === "object")) {
+                res.status(403).json({ message: 'Invalid or expired token' });
+                return;
+            }
 
-        req.user = decoded;
+            if (!user.userId || !user.username || !user.email) {
+                res.status(403).json({ message: 'Invalid token' });
+                return;
+            }
 
-        next();
+            req.user = user as JwtPayload; // user contains payload (userId, username, email, etc.)
+            next();
+        });
+
     } catch (error) {
         res.sendStatus(500);
         return;
