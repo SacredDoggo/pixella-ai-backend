@@ -95,7 +95,7 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
             { expiresIn: "7d" }
         )
 
-        res.status(200).json(token).end();
+        res.status(200).json({ userId: user.id, username: user.username, email: user.email, token }).end();
         return;
     } catch (error) {
         console.error(error);

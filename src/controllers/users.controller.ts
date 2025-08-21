@@ -14,6 +14,21 @@ export const getAllUsers: express.RequestHandler = async (req: express.Request, 
     }
 }
 
+export const getUser: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+    try {        
+        res.status(200).json({ 
+            userId: req.user.userId,
+            username: req.user.username,
+            email: req.user.email
+        }).end();
+        return;
+    } catch (error) {
+        console.error(error);
+        res.sendStatus(500);
+        return;
+    }
+}
+
 export const getUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         const userId = req.params.id;
