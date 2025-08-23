@@ -6,7 +6,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 
 export const validateId: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
-        const id = req.params.id;
+        const id = req.params.user_id || req.params.chat_id;
         
         // Check if the ID is a valid ObjectId
         if (!(typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id))) {
@@ -55,7 +55,7 @@ export const isAuthenticated: express.RequestHandler = async (req: express.Reque
 
 export const isAccountOwner: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
-        const id = req.params.id;
+        const id = req.params.user_id;
 
         if (!req.user) {
             res.sendStatus(401);

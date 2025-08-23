@@ -31,7 +31,7 @@ export const getUser: express.RequestHandler = async (req: express.Request, res:
 
 export const getUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
-        const userId = req.params.id;
+        const userId = req.params.user_id;
 
         const user = await prisma.user.findUnique({
             where: { id: userId },
@@ -53,7 +53,7 @@ export const getUserById: express.RequestHandler = async (req: express.Request, 
 
 export const updateUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
-        const userId = req.params.id;
+        const userId = req.params.user_id;
 
         // Check if there is an request body
         if (!req.body) {
@@ -86,7 +86,7 @@ export const updateUserById: express.RequestHandler = async (req: express.Reques
 
 export const deleteUserById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
-        const userId = req.params.id;
+        const userId = req.params.user_id;
 
         const user = await prisma.user.delete({
             where: { id: userId }
