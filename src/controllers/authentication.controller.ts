@@ -15,10 +15,29 @@ export const register: express.RequestHandler = async (req: express.Request, res
             return;
         }
 
-        const { username, email, password } = req.body;
+        const { usernamePreCheck, emailPreCheck, passwordPreCheck } = req.body;
 
-        if (!username || !email || !password) {
+        if (!usernamePreCheck || !emailPreCheck || !passwordPreCheck) {
             res.status(400).json({ error: "Arguments missing!" });
+            return;
+        }
+
+        const username = usernamePreCheck.trim();
+        const email = emailPreCheck.trim();
+        const password = passwordPreCheck.trim();
+
+        if (password.length < 8) {
+            res.status(400).json({ error: "Password must be at least 8 characters long!" });
+            return;
+        }   
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            res.status(400).json({ error: "Invalid email address!" });
+            return;
+        }
+
+        if (!/^[a-zA-Z0-9_]{3,30}$/.test(username)) {
+            res.status(400).json({ error: "Username must be 3-30 characters long and can only contain letters, numbers, and underscores!" });
             return;
         }
 
@@ -52,7 +71,7 @@ export const register: express.RequestHandler = async (req: express.Request, res
         res.sendStatus(201);
         return;
     } catch (error) {
-        console.error(error);
+        console.error("Error during registration:", error);
         res.sendStatus(500);
         return;
     }
@@ -65,23 +84,38 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
             return;
         }
 
-        const { identifier, password } = req.body;
+        const { identifierPreCheck, passwordPreCheck } = req.body;
 
-        if (!identifier || !password) {
-            res.status(400).json({ error: "Arguments missing!" })
+        if (!identifierPreCheck || !passwordPreCheck) {
+            res.status(400).json({ error: "Arguments missing!" });
+            return;
         }
 
+        const identifier = identifierPreCheck.trim();
+        const password = passwordPreCheck.trim();
+
         // Find user by username or email, including their password hash
-        const user = await prisma.user.findFirst({
-            where: {
-                OR: [{ username: identifier }, { email: identifier }],
-            },
-            include: { password: true },
-        });
+        let user = null;
+        if (identifier.includes("@")) {
+            user = await prisma.user.findUnique({
+                where: { email: identifier },
+                include: { password: true },
+            });
+        } else {
+            user = await prisma.user.findUnique({
+                where: { username: identifier },
+                include: { password: true },
+            });
+        }
 
 
         if (!user || !(user.password?.hash && await bcrypt.compare(password, user.password.hash))) {
-            res.status(404).json({ error: "Invaid credentials!" });
+            res.status(404).json({ error: "Invalid credentials!" });
+            return;
+        }
+
+        if (!process.env.JWT_SECRET) {
+            res.status(500).json({ error: "JWT secret is not configured on the server." });
             return;
         }
 
@@ -91,14 +125,14 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
                 username: user.username,
                 email: user.email
             },
-            process.env.JWT_SECRET as string,
+            process.env.JWT_SECRET,
             { expiresIn: "7d" }
-        )
+        );
 
         res.status(200).json({ userId: user.id, username: user.username, email: user.email, token }).end();
         return;
     } catch (error) {
-        console.error(error);
+        console.error("Error during login:", error);
         res.sendStatus(500);
         return;
     }
