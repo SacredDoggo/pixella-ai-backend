@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { fetchChatHistoryByIdService } from "./chat.service";
-import { ContextMessages } from "../types/generic";
+import { ContextMessages } from "../types/generic.type";
 
 export const generateContextForAI = async (chatId: string, userId: string): Promise<ContextMessages[]> => {
     // Fetch last 10 messages from the chat for context

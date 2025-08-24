@@ -4,7 +4,7 @@ import { createNewChatService, fetchChatHistoryByIdService } from "../service/ch
 import { GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import { createNewMessageService } from "../service/message.service";
 import { generateContextForAI, generateResponseService } from "../service/ai.service";
-import { ContextMessages } from "../types/generic";
+import { ContextMessages } from "../types/generic.type";
 
 
 export const startNewChatAndRespond = async (req: express.Request, res: express.Response): Promise<void> => {

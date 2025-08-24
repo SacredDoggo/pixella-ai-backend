@@ -15,16 +15,16 @@ export const register: express.RequestHandler = async (req: express.Request, res
             return;
         }
 
-        const { usernamePreCheck, emailPreCheck, passwordPreCheck } = req.body;
+        let { username, email, password } = req.body;
 
-        if (!usernamePreCheck || !emailPreCheck || !passwordPreCheck) {
+        if (!username || !email || !password) {
             res.status(400).json({ error: "Arguments missing!" });
             return;
         }
 
-        const username = usernamePreCheck.trim();
-        const email = emailPreCheck.trim();
-        const password = passwordPreCheck.trim();
+        username = username.trim();
+        email = email.trim();
+        password = password.trim();
 
         if (password.length < 8) {
             res.status(400).json({ error: "Password must be at least 8 characters long!" });
@@ -84,15 +84,15 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
             return;
         }
 
-        const { identifierPreCheck, passwordPreCheck } = req.body;
+        let { identifier, password } = req.body;
 
-        if (!identifierPreCheck || !passwordPreCheck) {
+        if (!identifier || !password) {
             res.status(400).json({ error: "Arguments missing!" });
             return;
         }
 
-        const identifier = identifierPreCheck.trim();
-        const password = passwordPreCheck.trim();
+        identifier = identifier.trim();
+        password = password.trim();
 
         // Find user by username or email, including their password hash
         let user = null;
