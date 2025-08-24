@@ -9,7 +9,7 @@ export const generateContextForAI = async (chatId: string, userId: string): Prom
     // Format messages for AI input
     return messages.map(msg => ({
         role: msg.role === "user" ? "user" : "model",
-        parts: [{ text: msg.content }]
+        parts: [{ text: msg.content.join(" ") }]
     }));
 }
 
