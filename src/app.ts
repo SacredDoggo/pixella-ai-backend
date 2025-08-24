@@ -11,7 +11,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Cors handling
-app.use(cors());
+const allowedOrigins = ['http://localhost:3000', 'https://pixella-ai.vercel.app/'];
+
+const corsOptions: cors.CorsOptions = {
+  origin: allowedOrigins,
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+};
+
+app.use(cors(corsOptions));
 
 // Parse incoming requests body for application/json
 app.use(express.json());

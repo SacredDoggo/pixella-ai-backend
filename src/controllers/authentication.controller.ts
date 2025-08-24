@@ -29,7 +29,7 @@ export const register: express.RequestHandler = async (req: express.Request, res
         if (password.length < 8) {
             res.status(400).json({ error: "Password must be at least 8 characters long!" });
             return;
-        }   
+        }
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             res.status(400).json({ error: "Invalid email address!" });
