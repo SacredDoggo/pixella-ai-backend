@@ -1,37 +1,3 @@
-<style>
-body {
-  background: #18191c;
-  color: #ececec;
-  font-family: 'Inter', Arial, sans-serif;
-}
-h1, h2, h3 {
-  color: #ffd967;
-  margin-top: 1.5em;
-}
-strong, th {
-  color: #95e2ff;
-}
-code, pre {
-  background: #23272e;
-  color: #d1cdc7;
-  border-radius: 6px;
-  padding: 2px 6px;
-}
-table {
-  background: #23272e;
-  color: #fff;
-  border-collapse: collapse;
-  margin: 1em 0;
-}
-td, th {
-  border: 1px solid #333;
-  padding: 5px 10px;
-}
-a {
-  color: #85e1fc;
-}
-</style>
-
 # Pixella AI Backend – API Documentation
 
 Pixella AI Backend is a TypeScript, Express, and Prisma-based server offering secure chat, message, and user management APIs.  
@@ -48,9 +14,9 @@ Register a new user.
 **Request Body:**
 ```
 {
-"usernamePreCheck": "string", // 3-30 chars, only [a-zA-Z0-9_]
-"emailPreCheck": "string", // valid email
-"passwordPreCheck": "string" // min 8 chars
+"username": "string", // 3-30 chars, only [a-zA-Z0-9_]
+"email": "string", // valid email
+"password": "string" // min 8 chars
 }
 ```
 **Responses:**
@@ -67,8 +33,8 @@ Login with email or username.
 **Request Body:**
 ```
 {
-"identifierPreCheck": "string", // email or username
-"passwordPreCheck": "string"
+"identifier": "string", // email or username
+"password": "string"
 }
 ```
 **Responses:**
