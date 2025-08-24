@@ -192,7 +192,7 @@
 		<pre>{
   			"identifier": "string", // email or username
   			"password": "string"
-}</pre>
+		}</pre>
 		<strong>Responses:</strong>
 		<ul>
 			<li>200 OK – <code>{ userId, username, email, token }</code></li>
@@ -272,13 +272,31 @@
 		<h2>Chats</h2>
 		<ul>
 			<li>
+				<strong>GET</strong> <code>/chat</code> — List user chats. Auth required.<br>
+				<b>Response:</b>
+				<pre>[
+				    {
+				      	"id": "string",
+    					"title": "string",
+    					"userId": "string",
+    					"lastMessageAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    					"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    					"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    					"_count": {
+    					  "messages": "number"
+    					}
+				    }
+				]</pre>
+			<li>
 				<strong>POST</strong> <code>/chat</code> — Start new chat.<br>
 				<b>Response:</b>
 				<pre>{
-				    "id": "string",
-				    "title": "string",
-				    "createdAt": "...",
-				    "userId": "string"
+				    id": "string",
+    				"title": "string",
+    				"userId": "string",
+    				"lastMessageAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    				"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    				"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
 				}</pre>
 			</li>
 			<li>
@@ -286,13 +304,12 @@
 				<b>Response:</b>
 				<pre>[
 				    {
-				      "id": "string",
-				      "content": ["string"],
-				      "role": "user" | "model",
-				      "createdAt": "...",
-				      ...
+				      	"id": "string",
+				      	"content": ["string"],
+				      	"role": "user" | "model",
+				      	"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    					"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
 				    }
-				    // ...more messages
 				]</pre>
 			</li>
 			<li>
@@ -304,7 +321,8 @@
 					"id": "string",
 					"title": "string",
 					"userId": "string",
-					...
+					"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    				"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
 				}</pre>
 			</li>
 			<li>
@@ -327,23 +345,34 @@
 				<b>Response (201):</b>
 				<pre>{
 				    "chat": {
-				      "id": "string",
-				      "userId": "string",
-				      ...
+				    	"id": "string",
+    					"title": "string",
+    					"userId": "string",
+    					"lastMessageAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    					"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ",
+    					"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
 				    },
 				    "messages": [
-				      {
-				        "id": "string",
-				        "role": "user",
-				        "content": ["string"],
-				        ...
-				      },
-				      {
-				        "id": "string",
-				        "role": "model",
-				        "content": ["string"],
-				        ...
-				      }
+				      	{
+				        	"id": "string",
+      						"chatId": "string",
+      						"replyOf": null,
+      						"userId": "string",
+      						"role": "user",
+      						"content": ["string"],
+      						"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+							"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+				      	},
+				      	{
+				        	"id": "string",
+      						"chatId": "string",
+      						"replyOf": "string", // user message ID
+      						"userId": "string",
+      						"role": "user",
+      						"content": ["string"],
+      						"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+							"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+				      	}
 				    ]
 				}</pre>
 			</li>
@@ -354,18 +383,26 @@
 				<b>Response:</b>
 				<pre>{
 				    "messages": [
-				      {
-				        "id": "string",
-				        "role": "user",
-				        "content": ["string"],
-				        ...
-				      },
-				      {
-				        "id": "string",
-				        "role": "model",
-				        "content": ["string"],
-				        ...
-				      }
+				      	{
+				        	"id": "string",
+      						"chatId": "string",
+      						"replyOf": null,
+      						"userId": "string",
+      						"role": "user",
+      						"content": ["string"],
+      						"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+							"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+				      	},
+				      	{
+				        	"id": "string",
+      						"chatId": "string",
+      						"replyOf": "string", // user message ID
+      						"userId": "string",
+      						"role": "user",
+      						"content": ["string"],
+      						"createdAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+							"updatedAt": "YYYY-MM-DDTHH:MM:SS.sssZ"
+				      	}
 				    ]
 				}</pre>
 			</li>
