@@ -15,8 +15,8 @@ export const getAllUsers: express.RequestHandler = async (req: express.Request, 
 }
 
 export const getUser: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
-    try {        
-        res.status(200).json({ 
+    try {
+        res.status(200).json({
             userId: req.user.userId,
             username: req.user.username,
             email: req.user.email

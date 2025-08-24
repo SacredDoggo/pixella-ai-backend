@@ -14,7 +14,7 @@ export const getChatHistoryById: express.RequestHandler = async (req: express.Re
         res.status(200).json(chats).end();
         return;
     } catch (error) {
-        console.error(error);
+        console.error("[chat.controller] getChatHistoryById error: ", error);
         res.sendStatus(500);
         return;
     }
@@ -29,7 +29,7 @@ export const startNewChat: express.RequestHandler = async (req: express.Request,
         res.status(201).json(newChat).end();
         return;
     } catch (error) {
-        console.error(error);
+        console.error("[chat.controller] startNewChat error: ", error);
         res.sendStatus(500);
         return;
     }
@@ -58,7 +58,7 @@ export const updateChatById: express.RequestHandler = async (req: express.Reques
         res.status(200).json(updatedChat).end();
         return;
     } catch (error) {
-        console.error(error);
+        console.error("[chat.controller] updateChatById error: ", error);
         res.sendStatus(500);
         return;
     }
@@ -83,7 +83,7 @@ export const deleteChatById: express.RequestHandler = async (req: express.Reques
         res.sendStatus(204);
         return;
     } catch (error) {
-        console.error(error);
+        console.error("[chat.controller] deleteChatById error: ", error);
         res.sendStatus(500);
         return;
     }

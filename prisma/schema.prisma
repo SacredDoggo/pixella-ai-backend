@@ -18,6 +18,7 @@ model User {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     username  String   @unique
     email     String   @unique
+    verified  Boolean  @default(false)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -36,7 +37,7 @@ model PasswordHash {
 
 model Chat {
     id        String    @id @default(auto()) @map("_id") @db.ObjectId
-    title     String?	@default("New Chat")
+    title     String?   @default("New Chat")
     userId    String    @db.ObjectId
     user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     messages  Message[]
@@ -48,9 +49,10 @@ model Message {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     chatId    String   @db.ObjectId
     chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+    replyOf   String?  @db.ObjectId
     userId    String   @db.ObjectId
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    role      String 
+    role      String
     content   String
     createdAt DateTime @default(now())
 }

@@ -3,17 +3,40 @@ dotenv.config();
 
 import express from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { prisma } from "../config/prisma";
 
 export const validateId: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
-        const id = req.params.user_id || req.params.chat_id;
-        
+        const id = req.params.user_id || req.params.chat_id || req.params.message_id;
+
         // Check if the ID is a valid ObjectId
         if (!(typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id))) {
             res.status(400).json({ error: "Invalid ID" });
-            return;        
+            return;
         }
-        
+
+        if (req.params.message_id) {
+            const message = await prisma.message.findUnique({
+                where: { id: req.params.message_id }
+            });
+
+            if (!message) {
+                res.status(404).json({ error: "Message not found" });
+                return;
+            }
+        }
+
+        if (req.params.chat_id) {
+            const chat = await prisma.chat.findUnique({
+                where: { id: req.params.chat_id }
+            });
+
+            if (!chat) {
+                res.status(404).json({ error: "Chat not found" });
+                return;
+            }
+        }
+
         next();
     } catch (error) {
         res.sendStatus(500);

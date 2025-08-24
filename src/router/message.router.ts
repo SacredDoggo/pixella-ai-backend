@@ -5,7 +5,7 @@ import { changeUserMessageAndRegenerate, continueChat, deleteMessageById, regene
 export default (router: express.Router) => {
     router.post("/message", isAuthenticated, startNewChatAndRespond);
     router.post("/message/:chat_id", validateId, isAuthenticated, continueChat);
-    router.post("/message/:message_id", validateId, isAuthenticated, regenerateResponse);
-    router.patch("/message/:message_id", validateId, isAuthenticated, changeUserMessageAndRegenerate);
-    router.delete("/message/:message_id", validateId, isAuthenticated, deleteMessageById);
+    router.post("/message/regenerate/:message_id", validateId, isAuthenticated, regenerateResponse);
+    router.patch("/message/change-prompt/:message_id", validateId, isAuthenticated, changeUserMessageAndRegenerate);
+    router.delete("/message/delete-message/:message_id", validateId, isAuthenticated, deleteMessageById);
 }
