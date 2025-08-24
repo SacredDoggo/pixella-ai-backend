@@ -6,7 +6,7 @@ export const createNewMessageService = async (chatId: string, userId: string, ro
             chatId,
             userId,
             role,
-            content: text,
+            content: [text],
             replyOf: replyOf || null,
         },
     });

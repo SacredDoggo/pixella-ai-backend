@@ -2,302 +2,455 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <title>Pixella AI Backend – API Documentation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body {
-      background: #130024;
-      color: #fbfbfe;
-      font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', 'Menlo', 'monospace';
-      margin: 0;
-      padding: 44px 8vw 44px 8vw;
-      line-height: 1.7;
-      letter-spacing: 0.02em;
-    }
+	<meta charset="UTF-8" />
+	<title>Pixella AI Backend – API Documentation</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<style>
+		body {
+			background: #130024;
+			color: #fbfbfe;
+			font-family: 'JetBrains Mono', 'Fira Mono', 'Consolas', 'Menlo', 'monospace';
+			margin: 0;
+			padding: 44px 8vw 44px 8vw;
+			line-height: 1.7;
+			letter-spacing: 0.02em;
+		}
 
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: inherit;
-      font-weight: bold;
-      margin-top: 2.1em;
-      margin-bottom: 1.3em;
-      line-height: 1.2;
-      letter-spacing: 0.03em;
-    }
+		h1,
+		h2,
+		h3,
+		h4 {
+			font-family: inherit;
+			font-weight: bold;
+			margin-top: 2.1em;
+			margin-bottom: 1.3em;
+			line-height: 1.2;
+			letter-spacing: 0.03em;
+		}
 
-    h1 {
-      font-size: 2.8em;
-      color: #fd6ac5;
-      margin-top: 0;
-      border-bottom: 2.5px solid #6acbfd;
-      padding-bottom: 10px;
-    }
+		h1 {
+			font-size: 2.8em;
+			color: #fd6ac5;
+			margin-top: 0;
+			border-bottom: 2.5px solid #6acbfd;
+			padding-bottom: 10px;
+		}
 
-    h2 {
-      font-size: 2.1em;
-      color: #6acbfd;
-      border-left: 4px solid #fd6ac5;
-      padding-left: 16px;
-      margin-top: 2.2em;
-    }
+		h2 {
+			font-size: 2.1em;
+			color: #6acbfd;
+			border-left: 4px solid #fd6ac5;
+			padding-left: 16px;
+			margin-top: 2.2em;
+		}
 
-    h3 {
-      font-size: 1.45em;
-      color: #fbfbfe;
-      background: linear-gradient(90deg, #fd6ac5 0px, transparent 85%);
-      border-radius: 8px 30px 30px 8px;
-      padding: 7px 16px;
-      margin-top: 2.2em;
-    }
+		h3 {
+			font-size: 1.45em;
+			color: #fbfbfe;
+			background: linear-gradient(90deg, #fd6ac5 0px, transparent 85%);
+			border-radius: 8px 30px 30px 8px;
+			padding: 7px 16px;
+			margin-top: 2.2em;
+		}
 
-    h4 {
-      font-size: 1.15em;
-      color: #6acbfd;
-      margin-top: 1.7em;
-    }
+		h4 {
+			font-size: 1.15em;
+			color: #6acbfd;
+			margin-top: 1.7em;
+		}
 
-    strong,
-    th {
-      color: #fd6ac5;
-      font-weight: bold;
-    }
+		strong,
+		th {
+			color: #fd6ac5;
+			font-weight: bold;
+		}
 
-    code,
-    pre {
-      background: #1a003a;
-      color: #6acbfd;
-      border-radius: 6px;
-      font-family: inherit;
-      padding: 0.29em 0.68em;
-      margin: 0.35em 0;
-      font-size: 1em;
-      display: inline-block;
-    }
+		code,
+		pre {
+			background: #1a003a;
+			color: #6acbfd;
+			border-radius: 6px;
+			font-family: inherit;
+			padding: 0.29em 0.68em;
+			margin: 0.35em 0;
+			font-size: 1em;
+			display: inline-block;
+		}
 
-    pre {
-      padding: 1.16em 1.1em;
-      display: block;
-      overflow-x: auto;
-      white-space: pre;
-    }
+		pre {
+			padding: 1.16em 1.1em;
+			display: block;
+			overflow-x: auto;
+			white-space: pre;
+		}
 
-    kbd {
-      background: #fd6ac5;
-      color: #fff;
-      border-radius: 4px;
-      padding: 0.15em 0.52em;
-      font-size: 0.9em;
-      font-weight: bolder;
-    }
+		kbd {
+			background: #fd6ac5;
+			color: #fff;
+			border-radius: 4px;
+			padding: 0.15em 0.52em;
+			font-size: 0.9em;
+			font-weight: bolder;
+		}
 
-    ul,
-    ol {
-      margin: 1.1em 0 1.6em 2.3em;
-      padding: 0;
-    }
+		ul,
+		ol {
+			margin: 1.1em 0 1.6em 2.3em;
+			padding: 0;
+		}
 
-    li {
-      margin-bottom: 0.51em;
-    }
+		li {
+			margin-bottom: 0.51em;
+		}
 
-    table {
-      background: #1a003a;
-      color: #fbfbfe;
-      border-collapse: collapse;
-      margin: 2.1em auto 2.1em auto;
-      width: 93%;
-      font-size: 1.04em;
-      letter-spacing: 0.01em;
-      border-radius: 8px;
-      overflow: hidden;
-    }
+		table {
+			background: #1a003a;
+			color: #fbfbfe;
+			border-collapse: collapse;
+			margin: 2.1em auto 2.1em auto;
+			width: 93%;
+			font-size: 1.04em;
+			letter-spacing: 0.01em;
+			border-radius: 8px;
+			overflow: hidden;
+		}
 
-    th,
-    td {
-      border: 1.3px solid #6acbfd;
-      padding: 13px 18px;
-      text-align: left;
-    }
+		th,
+		td {
+			border: 1.3px solid #6acbfd;
+			padding: 13px 18px;
+			text-align: left;
+		}
 
-    th {
-      background: #26005b;
-      color: #87e9fd;
-      font-size: 1.07em;
-      font-weight: bolder;
-    }
+		th {
+			background: #26005b;
+			color: #87e9fd;
+			font-size: 1.07em;
+			font-weight: bolder;
+		}
 
-    a {
-      color: #6acbfd;
-      text-decoration: underline;
-    }
+		a {
+			color: #6acbfd;
+			text-decoration: underline;
+		}
 
-    .section {
-      margin-bottom: 2.8em;
-    }
+		.section {
+			margin-bottom: 2.8em;
+		}
 
-    .desc-main {
-      color: #6acbfd;
-      font-size: 1.17em;
-      margin-bottom: 2em;
-    }
+		.desc-main {
+			color: #6acbfd;
+			font-size: 1.17em;
+			margin-bottom: 2em;
+		}
 
-    @media (max-width: 730px) {
-      body {
-        padding: 10px;
-      }
+		@media (max-width: 730px) {
+			body {
+				padding: 10px;
+			}
 
-      table {
-        width: 100%;
-        font-size: 0.98em;
-      }
-    }
-  </style>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+			table {
+				width: 100%;
+				font-size: 0.98em;
+			}
+		}
+	</style>
+	<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
 </head>
 
 <body>
 
-  <h1>Pixella AI Backend – API Documentation</h1>
-  <div class="desc-main">
-    Pixella AI Backend is a TypeScript, Express, and Prisma-based RESTful server for chat and user management.<br>
-    <b>Base URL:</b> <code>/api/v1</code>
-  </div>
+	<h1>Pixella AI Backend – API Documentation</h1>
+	<div class="desc-main">
+		Pixella AI Backend is a TypeScript, Express, and Prisma-based RESTful server for chat and user management.<br>
+		<b>Base URL:</b> <code>/api/v1</code>
+	</div>
 
-  <div class="section">
-    <h2>Authentication</h2>
+	<div class="section">
+		<h2>Authentication</h2>
 
-    <h3>Register</h3>
-    <strong>POST</strong> <code>/auth/register</code><br>
-    Register a new user.<br>
-    <strong>Request Body:</strong>
-    <pre>{
-  "username": "string",   // 3-30 chars, only [a-zA-Z0-9_]
-  "email": "string",      // valid email
-  "password": "string"    // min 8 chars
+		<h3>Register</h3>
+		<strong>POST</strong> <code>/auth/register</code><br>
+		Register a new user.<br>
+		<strong>Request Body:</strong>
+		<pre>{
+  			"username": "string",   // 3-30 chars, only [a-zA-Z0-9_]
+  			"email": "string",      // valid email
+  			"password": "string"    // min 8 chars
 }</pre>
-    <strong>Responses:</strong>
-    <ul>
-      <li>201 Created – Success</li>
-      <li>400 Bad Request – Invalid or missing fields</li>
-      <li>409 Conflict – User exists</li>
-    </ul>
+		<strong>Responses:</strong>
+		<ul>
+			<li>201 Created – Success</li>
+			<li>400 Bad Request – Invalid or missing fields</li>
+			<li>409 Conflict – User exists</li>
+		</ul>
 
-    <h3>Login</h3>
-    <strong>POST</strong> <code>/auth/login</code><br>
-    Login with email or username.<br>
-    <strong>Request Body:</strong>
-    <pre>{
-  "identifier": "string", // email or username
-  "password": "string"
+		<h3>Login</h3>
+		<strong>POST</strong> <code>/auth/login</code><br>
+		Login with email or username.<br>
+		<strong>Request Body:</strong>
+		<pre>{
+  			"identifier": "string", // email or username
+  			"password": "string"
 }</pre>
-    <strong>Responses:</strong>
-    <ul>
-      <li>200 OK – <code>{ userId, username, email, token }</code></li>
-      <li>400 / 404 / 500 – For errors</li>
-    </ul>
+		<strong>Responses:</strong>
+		<ul>
+			<li>200 OK – <code>{ userId, username, email, token }</code></li>
+			<li>400 / 404 / 500 – For errors</li>
+		</ul>
 
-    <h4>Authentication Header</h4>
-    All protected routes require<br>
-    <code>Authorization: Bearer &lt;token&gt;</code>
-  </div>
+		<h4>Authentication Header</h4>
+		All protected routes require<br>
+		<code>Authorization: Bearer &lt;token&gt;</code>
+	</div>
 
-  <div class="section">
-    <h2>Users</h2>
-    <ul>
-      <li><strong>GET</strong> <code>/user/getAllUsers</code> — Auth required. Dev only.</li>
-      <li><strong>GET</strong> <code>/user</code> — Current user info. Auth required.</li>
-      <li><strong>GET</strong> <code>/user/:user_id</code> — User by ID. Auth required. 404 if not found.</li>
-      <li><strong>PATCH</strong> <code>/user/:user_id</code> — Update user. Only owner. Partial body.</li>
-      <li><strong>DELETE</strong> <code>/user/:user_id</code> — Delete user. Only owner.</li>
-    </ul>
-  </div>
+	<div class="section">
+		<h2>Users</h2>
+		<ul>
+			<li>
+				<strong>GET</strong> <code>/user/getAllUsers</code> — Auth required.<br>
+				<b>Response:</b>
+				<pre>[
+  					{
+  					  "id": "string",
+  					  "username": "string",
+  					  "email": "string",
+  					  ... // other user fields
+  					}
+				]</pre>
+			</li>
+			<li>
+				<strong>GET</strong> <code>/user</code> — Current user info. Auth required.<br>
+				<b>Response:</b>
+				<pre>{
+				  	"userId": "string",
+				  	"username": "string",
+				  	"email": "string"
+				}</pre>
+			</li>
+			<li>
+				<strong>GET</strong> <code>/user/:user_id</code> — User by ID. Auth required.<br>
+				<b>Response (200):</b>
+				<pre>{
+				 	"id": "string",
+				 	"username": "string",
+				 	"email": "string",
+				 	...
+				}</pre>
+				<b>Response (404):</b>
+				<pre>{ "error": "User does not exists." }</pre>
+			</li>
+			<li>
+				<strong>PATCH</strong> <code>/user/:user_id</code> — Update user. Only owner.<br>
+				<b>Request Body:</b>
+				<pre>{
+				    // Updatable fields, e.g.
+				    "username": "string",
+				    "email": "string"
+				}</pre>
+				<b>Response:</b>
+				<pre>{
+					"id": "string",
+					"username": "string",
+					"email": "string",
+				}</pre>
+			</li>
+			<li>
+				<strong>DELETE</strong> <code>/user/:user_id</code> — Delete user. Only owner.<br>
+				<b>Response:</b>
+				<pre>{
+           			"id": "string",
+    				"username": "string",
+  					"email": "string",
+  					... // deleted user object
+				}</pre>
+			</li>
+		</ul>
+	</div>
 
-  <div class="section">
-    <h2>Chats</h2>
-    <ul>
-      <li><strong>POST</strong> <code>/chat</code> — Start new chat. Auth required. Optional title.</li>
-      <li><strong>GET</strong> <code>/chat/:chat_id/:limit?</code> — Chat history. Optional <code>limit</code> param.
-      </li>
-      <li><strong>PATCH</strong> <code>/chat/:chat_id</code> — Rename chat.</li>
-      <li><strong>DELETE</strong> <code>/chat/:chat_id</code> — Remove chat.</li>
-    </ul>
-  </div>
+	<div class="section">
+		<h2>Chats</h2>
+		<ul>
+			<li>
+				<strong>POST</strong> <code>/chat</code> — Start new chat.<br>
+				<b>Response:</b>
+				<pre>{
+				    "id": "string",
+				    "title": "string",
+				    "createdAt": "...",
+				    "userId": "string"
+				}</pre>
+			</li>
+			<li>
+				<strong>GET</strong> <code>/chat/:chat_id/:limit?</code> — Chat history.<br>
+				<b>Response:</b>
+				<pre>[
+				    {
+				      "id": "string",
+				      "content": ["string"],
+				      "role": "user" | "model",
+				      "createdAt": "...",
+				      ...
+				    }
+				    // ...more messages
+				]</pre>
+			</li>
+			<li>
+				<strong>PATCH</strong> <code>/chat/:chat_id</code> — Rename chat.<br>
+				<b>Request Body:</b>
+				<pre>{ "title": "string" }</pre>
+				<b>Response:</b>
+				<pre>{
+					"id": "string",
+					"title": "string",
+					"userId": "string",
+					...
+				}</pre>
+			</li>
+			<li>
+				<strong>DELETE</strong> <code>/chat/:chat_id</code> — Remove chat.<br>
+				<b>Response (204):</b>
+				<pre>(no content)</pre>
+				<b>Response (404):</b>
+				<pre>{ "error": "Chat does not exists." }</pre>
+			</li>
+		</ul>
+	</div>
 
-  <div class="section">
-    <h2>Messages</h2>
-    <ul>
-      <li><strong>POST</strong> <code>/message</code> — <code>{"text":"string"}</code> — New chat + AI response.</li>
-      <li><strong>POST</strong> <code>/message/:chat_id</code> — <code>{"text":"string"}</code> — Reply in chat.</li>
-      <li><strong>POST</strong> <code>/message/regenerate/:message_id</code> — Regenerate AI response.</li>
-      <li><strong>PATCH</strong> <code>/message/change-prompt/:message_id</code> — Edit/re-respond to user message.</li>
-      <li><strong>DELETE</strong> <code>/message/delete-message/:message_id</code> — Delete message.</li>
-    </ul>
-  </div>
+	<div class="section">
+		<h2>Messages</h2>
+		<ul>
+			<li>
+				<strong>POST</strong> <code>/message</code> — New chat + AI response.<br>
+				<b>Request Body:</b>
+				<pre>{ "userPrompt": "string" }</pre>
+				<b>Response (201):</b>
+				<pre>{
+				    "chat": {
+				      "id": "string",
+				      "userId": "string",
+				      ...
+				    },
+				    "messages": [
+				      {
+				        "id": "string",
+				        "role": "user",
+				        "content": ["string"],
+				        ...
+				      },
+				      {
+				        "id": "string",
+				        "role": "model",
+				        "content": ["string"],
+				        ...
+				      }
+				    ]
+				}</pre>
+			</li>
+			<li>
+				<strong>POST</strong> <code>/message/:chat_id</code> — Reply in chat.<br>
+				<b>Request Body:</b>
+				<pre>{ "userPrompt": "string" }</pre>
+				<b>Response:</b>
+				<pre>{
+				    "messages": [
+				      {
+				        "id": "string",
+				        "role": "user",
+				        "content": ["string"],
+				        ...
+				      },
+				      {
+				        "id": "string",
+				        "role": "model",
+				        "content": ["string"],
+				        ...
+				      }
+				    ]
+				}</pre>
+			</li>
+			<li>
+				<strong>POST</strong> <code>/message/regenerate/:message_id</code> — Regenerate AI response.<br>
+				<b>Response:</b>
+				<pre>200 OK (no body)</pre>
+			</li>
+			<li>
+				<strong>PATCH</strong> <code>/message/change-prompt/:message_id</code> — Edit/re-respond.<br>
+				<b>Request Body:</b>
+				<pre>{ "userPrompt": "string" }</pre>
+				<b>Response:</b>
+				<pre>200 OK (no body)</pre>
+			</li>
+			<li>
+				<strong>DELETE</strong> <code>/message/delete-message/:message_id</code><br>
+				<b>Response:</b>
+				<pre>200 OK (no body)</pre>
+			</li>
+		</ul>
+	</div>
 
-  <div class="section">
-    <h2>Status &amp; Errors</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Code</th>
-          <th>Meaning</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>200</td>
-          <td>Success</td>
-        </tr>
-        <tr>
-          <td>201</td>
-          <td>Created</td>
-        </tr>
-        <tr>
-          <td>204</td>
-          <td>No Content</td>
-        </tr>
-        <tr>
-          <td>400</td>
-          <td>Bad Request</td>
-        </tr>
-        <tr>
-          <td>401</td>
-          <td>Unauthorized</td>
-        </tr>
-        <tr>
-          <td>403</td>
-          <td>Forbidden</td>
-        </tr>
-        <tr>
-          <td>404</td>
-          <td>Not Found</td>
-        </tr>
-        <tr>
-          <td>409</td>
-          <td>Conflict</td>
-        </tr>
-        <tr>
-          <td>500</td>
-          <td>Internal Server Error</td>
-        </tr>
-      </tbody>
-    </table>
+	<div class="section">
+		<h2>Status &amp; Errors</h2>
+		<table>
+			<thead>
+				<tr>
+					<th>Code</th>
+					<th>Meaning</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>200</td>
+					<td>Success</td>
+				</tr>
+				<tr>
+					<td>201</td>
+					<td>Created</td>
+				</tr>
+				<tr>
+					<td>204</td>
+					<td>No Content</td>
+				</tr>
+				<tr>
+					<td>400</td>
+					<td>Bad Request</td>
+				</tr>
+				<tr>
+					<td>401</td>
+					<td>Unauthorized</td>
+				</tr>
+				<tr>
+					<td>403</td>
+					<td>Forbidden</td>
+				</tr>
+				<tr>
+					<td>404</td>
+					<td>Not Found</td>
+				</tr>
+				<tr>
+					<td>409</td>
+					<td>Conflict</td>
+				</tr>
+				<tr>
+					<td>500</td>
+					<td>Internal Server Error</td>
+				</tr>
+			</tbody>
+		</table>
 
-    <strong>On error:</strong>
-    <pre>{ "error": "Message here" }</pre>
-  </div>
+		<strong>On error:</strong>
+		<pre>{ "error": "Message here" }</pre>
+	</div>
 
-  <div style="margin-top: 3em; margin-bottom: 1em;">
-    <i>
-      All time, IDs, and tokens use standards. See repo for implementation details.<br>
-      This HTML is styled for a mono font and a crisp pink/blue/white dark color scheme. Designed for PDF export or
-      screen reading.<br>
-      <b>&copy; Pixella AI Backend Project</b>
-    </i>
-  </div>
+	<div style="margin-top: 3em; margin-bottom: 1em;">
+		<i>
+			All time, IDs, and tokens use standards. See repo for implementation details.<br>
+			This HTML is styled for a mono font and a crisp pink/blue/white dark color scheme. Designed for PDF export
+			or
+			screen reading.<br>
+			<b>&copy; Pixella AI Backend Project</b>
+		</i>
+	</div>
 </body>
 
 </html>

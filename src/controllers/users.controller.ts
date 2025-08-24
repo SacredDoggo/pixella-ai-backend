@@ -75,7 +75,9 @@ export const updateUserById: express.RequestHandler = async (req: express.Reques
             return;
         }
 
-        res.status(200).json(user).end();
+        const { password, ...userWithoutPassword } = user;
+
+        res.status(200).json(userWithoutPassword).end();
         return;
     } catch (error) {
         console.error(error);

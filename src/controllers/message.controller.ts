@@ -16,29 +16,29 @@ export const startNewChatAndRespond = async (req: express.Request, res: express.
             return;
         }
 
-        const { text } = req.body;
+        const { userPrompt } = req.body;
 
-        if (!text) {
-            res.status(400).json({ message: "Text is required" });
+        if (!userPrompt) {
+            res.status(400).json({ message: "userPrompt is required" });
             return;
         }
 
-        if (typeof text !== "string" || text.trim().length === 0) {
+        if (typeof userPrompt !== "string" || userPrompt.trim().length === 0) {
             res.status(400).json({ message: "Text must be a non-empty string" });
             return;
         }
 
-        const trimmedText = text.trim();
+        const trimmedprompt = userPrompt.trim();
 
         const newChat = await createNewChatService(userId);
 
         const contextMsgs: ContextMessages[] = await generateContextForAI(newChat.id, userId);
 
-        contextMsgs.push({ role: "user", parts: [{ text: trimmedText }] });
+        contextMsgs.push({ role: "user", parts: [{ text: trimmedprompt }] });
 
         const geminiResponse: GenerateContentResponse = await generateResponseService(contextMsgs);
 
-        const userMsg = await createNewMessageService(newChat.id, userId, "user", trimmedText);
+        const userMsg = await createNewMessageService(newChat.id, userId, "user", trimmedprompt);
 
         const aiMsg = await createNewMessageService(newChat.id, userId, "model", (geminiResponse.text || "Error while generating response"), userMsg.id);
         res.status(201).json({ chat: newChat, messages: [userMsg, aiMsg] }).end();
@@ -68,26 +68,26 @@ export const continueChat = async (req: express.Request, res: express.Response):
             return;
         }
 
-        const { text } = req.body;
+        const { userPrompt } = req.body;
 
-        if (!text) {
-            res.status(400).json({ message: "Text is required" });
+        if (!userPrompt) {
+            res.status(400).json({ message: "userPrompt is required" });
             return;
         }
 
-        if (typeof text !== "string" || text.trim().length === 0) {
-            res.status(400).json({ message: "Text must be a non-empty string" });
+        if (typeof userPrompt !== "string" || userPrompt.trim().length === 0) {
+            res.status(400).json({ message: "userPrompt must be a non-empty string" });
             return;
         }
 
-        const trimmedText = text.trim();
+        const trimmedprompt = userPrompt.trim();
 
         const contextMsgs: ContextMessages[] = await generateContextForAI(chatId, userId);
-        contextMsgs.push({ role: "user", parts: [{ text: trimmedText }] });
+        contextMsgs.push({ role: "user", parts: [{ text: trimmedprompt }] });
 
         const geminiResponse: GenerateContentResponse = await generateResponseService(contextMsgs);
 
-        const userMsg = await createNewMessageService(chatId, userId, "user", trimmedText);
+        const userMsg = await createNewMessageService(chatId, userId, "user", trimmedprompt);
 
         const aiMsg = await createNewMessageService(chatId, userId, "model", (geminiResponse.text || "Error while generating response"), userMsg.id);
 
