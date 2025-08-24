@@ -89,7 +89,7 @@ export const continueChat = async (req: express.Request, res: express.Response):
 
         const userMsg = await createNewMessageService(chatId, userId, "user", trimmedprompt);
 
-        const aiMsg = await createNewMessageService(chatId, userId, "model", (geminiResponse.text || "Error while generating response"), userMsg.id);
+        const aiMsg = await createNewMessageService(chatId, userId, "model", (geminiResponse.text || "Error while generating response"), userMsg.id, true);
 
         res.status(200).json({ messages: [userMsg, aiMsg] }).end();
         return;

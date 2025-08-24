@@ -1,7 +1,8 @@
 import { prisma } from "../config/prisma";
 
-export const createNewMessageService = async (chatId: string, userId: string, role: "user" | "model", text: string, replyOf?: string) => {
-    return await prisma.message.create({
+export const createNewMessageService = async (chatId: string, userId: string, role: "user" | "model", text: string, replyOf?: string, updateChatLastMessageAt?: boolean) => {
+
+    const message = await prisma.message.create({
         data: {
             chatId,
             userId,
@@ -10,4 +11,14 @@ export const createNewMessageService = async (chatId: string, userId: string, ro
             replyOf: replyOf || null,
         },
     });
+
+    // Update the chat's lastMessageAt
+    if (updateChatLastMessageAt) {
+        await prisma.chat.update({
+            where: { id: chatId },
+            data: { lastMessageAt: message.createdAt }
+        });
+    }
+
+    return message;
 }

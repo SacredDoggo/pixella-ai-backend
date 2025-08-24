@@ -3,6 +3,29 @@ import { prisma } from "../config/prisma";
 
 import { createNewChatService, deleteChatByIdService, fetchChatHistoryByIdService, updateChatByIdService } from "../service/chat.service";
 
+export const getUserChats: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+    try {
+        const userId = req.user.userId;
+
+        const chats = await prisma.chat.findMany({
+            where: { userId },
+            orderBy: { lastMessageAt: "desc" },
+            include: {
+                _count: {
+                    select: { messages: true }
+                }
+            }
+        });
+
+        res.status(200).json(chats).end();
+        return;
+    } catch (error) {
+        console.error("[chat.controller] getUserChats error: ", error);
+        res.sendStatus(500);
+        return;
+    }
+}
+
 export const getChatHistoryById: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         const chatId = req.params.chat_id;
