@@ -11,7 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Cors handling
-const allowedOrigins = ['http://localhost:3000', 'https://pixella-ai.vercel.app/'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:4200', 'https://pixella-ai.vercel.app/'];
 
 const corsOptions: cors.CorsOptions = {
   origin: allowedOrigins,
