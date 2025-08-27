@@ -2,24 +2,16 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 import express from 'express';
-import cors from 'cors';
 
 import router from "./router";
+import { configureCors } from "./config/cors";
 
 const app = express();
 
 const port = process.env.PORT || 3000;
 
 // Cors handling
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:4200', 'https://pixella-ai.vercel.app/'];
-
-const corsOptions: cors.CorsOptions = {
-  origin: allowedOrigins,
-  credentials: true,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
-};
-
-app.use(cors(corsOptions));
+configureCors(app)
 
 // Parse incoming requests body for application/json
 app.use(express.json());
