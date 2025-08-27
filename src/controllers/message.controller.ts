@@ -3,7 +3,7 @@ import express from "express";
 import { createNewChatService, fetchChatHistoryByIdService } from "../service/chat.service";
 import { GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import { createNewMessageService } from "../service/message.service";
-import { generateContextForAI, generateResponseService } from "../service/ai.service";
+import { generateChatTitle, generateContextForAI, generateResponseService } from "../service/ai.service";
 import { ContextMessages } from "../types/generic.type";
 
 
@@ -30,17 +30,21 @@ export const startNewChatAndRespond = async (req: express.Request, res: express.
 
         const trimmedprompt = userPrompt.trim();
 
-        const newChat = await createNewChatService(userId);
-
-        const contextMsgs: ContextMessages[] = await generateContextForAI(newChat.id, userId);
-
+        const contextMsgs: ContextMessages[] = [];
+        
         contextMsgs.push({ role: "user", parts: [{ text: trimmedprompt }] });
+        
+        const geminiResponse = await generateResponseService(contextMsgs);
 
-        const geminiResponse: GenerateContentResponse = await generateResponseService(contextMsgs);
-
+        contextMsgs.push({ role: "model", parts: [{ text: geminiResponse || "Error generating response, please try again later." }] });
+        const chatTitle = await generateChatTitle(contextMsgs);
+        
+        const newChat = await createNewChatService(userId, chatTitle);
+        
         const userMsg = await createNewMessageService(newChat.id, userId, "user", trimmedprompt);
 
-        const aiMsg = await createNewMessageService(newChat.id, userId, "model", (geminiResponse.text || "Error while generating response"), userMsg.id);
+        const aiMsg = await createNewMessageService(newChat.id, userId, "model", geminiResponse || "Error generating response, please try again later.", userMsg.id);
+        
         res.status(201).json({ chat: newChat, messages: [userMsg, aiMsg] }).end();
         return;
     } catch (error) {
@@ -85,11 +89,11 @@ export const continueChat = async (req: express.Request, res: express.Response):
         const contextMsgs: ContextMessages[] = await generateContextForAI(chatId, userId);
         contextMsgs.push({ role: "user", parts: [{ text: trimmedprompt }] });
 
-        const geminiResponse: GenerateContentResponse = await generateResponseService(contextMsgs);
+        const geminiResponse = await generateResponseService(contextMsgs);
 
         const userMsg = await createNewMessageService(chatId, userId, "user", trimmedprompt);
 
-        const aiMsg = await createNewMessageService(chatId, userId, "model", (geminiResponse.text || "Error while generating response"), userMsg.id, true);
+        const aiMsg = await createNewMessageService(chatId, userId, "model", geminiResponse || "Error while generating response", userMsg.id);
 
         res.status(200).json({ messages: [userMsg, aiMsg] }).end();
         return;

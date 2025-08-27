@@ -8,9 +8,12 @@ export const fetchChatHistoryByIdService = async (chatId: string, userId: string
     });
 }
 
-export const createNewChatService = async (userId: string) => {
+export const createNewChatService = async (userId: string, title?: string) => {
     return await prisma.chat.create({
-        data: { userId }
+        data: { 
+            userId,
+            title: title
+        }
     });
 }
 

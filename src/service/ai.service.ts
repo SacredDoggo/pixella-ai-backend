@@ -15,8 +15,23 @@ export const generateContextForAI = async (chatId: string, userId: string): Prom
 
 export const generateResponseService = async (contents: ContextMessages[]) => {
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    return await ai.models.generateContent({
+    const response = await ai.models.generateContent({
         model: "gemini-1.5-flash",
         contents,
     });
+
+    return response.text;
 }
+
+export const generateChatTitle = async (contents: ContextMessages[]) => {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const prompt: ContextMessages[] = [
+        ...contents,
+        { role: "user", parts: [{text: "Generate a concise, max 7 word chat title summarizing the user's and model's message. No quotes or special formatting. Output only the title."}] }
+    ];
+    const response = await ai.models.generateContent({
+        model: "gemini-1.5-flash",
+        contents: prompt
+    });
+    return response.text;
+};
