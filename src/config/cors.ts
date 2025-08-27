@@ -20,7 +20,17 @@ export const configureCors = (app: Application): void => {
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+      'Authorization',
+      'Content-Type',
+      'Accept',
+      'Origin'
+    ],
+    exposedHeaders: [
+      'Authorization',
+      'Content-Length'
+    ],
+    optionsSuccessStatus: 200 // Legacy browser support
   };
 
   app.use(cors(corsOptions));
