@@ -126,10 +126,17 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
                 email: user.email
             },
             process.env.JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "1h" }
         );
 
-        res.status(200).json({ userId: user.id, username: user.username, email: user.email, token }).end();
+        res.cookie('token', token, {
+            httpOnly: true,      // JS cannot read
+            secure: true,        // Only over HTTPS
+            sameSite: 'strict',     // Adjust for your needs
+            maxAge: 1 * 60 * 60 * 1000, // 1 hour
+            path: '/',           // Entire site
+        }).json({ user: { id: user.id, username: user.username, email: user.email }, token: token });
+
         return;
     } catch (error) {
         console.error("Error during login:", error);
@@ -137,3 +144,20 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
         return;
     }
 }
+
+export const logout: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+    try {
+        res
+            .clearCookie('token', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 1 * 60 * 60 * 1000, // 1 hour
+                path: '/',
+            })
+            .sendStatus(200);
+    } catch (error) {
+        console.error("Error during logout:", error);
+        res.sendStatus(500);
+    }
+};

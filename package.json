@@ -28,7 +28,8 @@
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "mongodb": "^6.19.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
