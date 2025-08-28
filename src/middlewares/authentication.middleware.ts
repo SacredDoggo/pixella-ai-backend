@@ -7,7 +7,7 @@ dotenv.config();
 export const isAuthenticated: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
         const authHeader = req.headers['authorization'];
-        const token: string | undefined = req.cookies.token || (authHeader && authHeader.split(' ')[1]); // Get the token from cookie or header
+        const token: string | undefined = (req.cookies && req.cookies.token) || (authHeader && authHeader.split(' ')[1]); // Get the token from cookie or header
 
         if (!token) {
             res.status(401).json({ message: "Unauthorized: No token provided" });
@@ -30,7 +30,8 @@ export const isAuthenticated: express.RequestHandler = async (req: express.Reque
         });
 
     } catch (error) {
-        res.sendStatus(500);
+        console.error(error);
+        res.status(500).json({ message: `Internal Server Error ${process.env.NODE_ENV !== 'production' && "[authentication.middleware]"}` });
         return;
     }
 }
