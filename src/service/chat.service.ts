@@ -1,4 +1,4 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.config";
 
 export const fetchChatHistoryByIdService = async (chatId: string, userId: string, limit: number) => {
     return await prisma.message.findMany({

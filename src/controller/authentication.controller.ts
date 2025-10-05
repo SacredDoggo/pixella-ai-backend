@@ -3,9 +3,10 @@ dotenv.config();
 
 import express from "express";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import jwt, { SignOptions } from "jsonwebtoken";
 
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.config";
+import SecretConfig from "../config/secrets.config";
 
 export const register: express.RequestHandler = async (req: express.Request, res: express.Response) => {
     try {
@@ -114,26 +115,21 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
             return;
         }
 
-        if (!process.env.JWT_SECRET) {
-            res.status(500).json({ error: "JWT secret is not configured on the server." });
-            return;
-        }
-
-        const token = jwt.sign(
+        const token = jwt.sign( // Payload, Secret, Options
             {
                 userId: user.id,
                 username: user.username,
                 email: user.email
             },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            SecretConfig.jwtSecret as string,
+            { expiresIn: SecretConfig.jwtExpiresIn } as SignOptions
         );
 
         res.cookie('token', token, {
             httpOnly: true,      // JS cannot read
             secure: true,        // Only over HTTPS
             sameSite: 'strict',     // Adjust for your needs
-            maxAge: 1 * 60 * 60 * 1000, // 1 hour
+            maxAge: SecretConfig.cookieMaxAge,
             path: '/',           // Entire site
         }).json({ user: { id: user.id, username: user.username, email: user.email }, token: token });
 

@@ -1,6 +1,6 @@
 import express from "express";
-import { deleteUserById, getAllUsers, getUser, getUserById, updateUserById } from "../controllers/users.controller";
-import { isAccountOwner, isAuthenticated, validateId } from "../middlewares";
+import { deleteUserById, getAllUsers, getUser, getUserById, updateUserById } from "../controller/users.controller";
+import { isAccountOwner, isAuthenticated, validateId } from "../middleware";
 
 export default (router: express.Router) => {
     if (process.env.NODE_ENV !== 'production') router.get("/user/getAllUsers", getAllUsers);

@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.config";
 
 export const isAccountOwner: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {

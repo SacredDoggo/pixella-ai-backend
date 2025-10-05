@@ -1,5 +1,5 @@
 import express from "express";
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.config";
 
 import { createNewChatService, deleteChatByIdService, fetchChatHistoryByIdService, updateChatByIdService } from "../service/chat.service";
 

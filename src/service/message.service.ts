@@ -1,4 +1,4 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.config";
 
 export const createNewMessageService = async (chatId: string, userId: string, role: "user" | "model", text: string, replyOf?: string) => {
 

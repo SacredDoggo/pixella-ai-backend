@@ -1,6 +1,7 @@
-import { GoogleGenAI } from "@google/genai";
 import { fetchChatHistoryByIdService } from "./chat.service";
 import { ContextMessages } from "../types/generic.type";
+import SecretConfig from "../config/secrets.config";
+import AIClient from "../config/ai.config"; 
 
 export const generateContextForAI = async (chatId: string, userId: string): Promise<ContextMessages[]> => {
     // Fetch last 10 messages from the chat for context
@@ -14,9 +15,10 @@ export const generateContextForAI = async (chatId: string, userId: string): Prom
 }
 
 export const generateResponseService = async (contents: ContextMessages[]) => {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const ai = AIClient.instance;
+    
     const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
+        model: SecretConfig.geminiModel,
         contents,
     });
 
@@ -24,14 +26,17 @@ export const generateResponseService = async (contents: ContextMessages[]) => {
 }
 
 export const generateChatTitle = async (contents: ContextMessages[]) => {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const ai = AIClient.instance;
+    
     const prompt: ContextMessages[] = [
         ...contents,
         { role: "user", parts: [{text: "Generate a concise, max 7 word chat title summarizing the user's and model's message. No quotes or special formatting. Output only the title."}] }
     ];
+
     const response = await ai.models.generateContent({
-        model: "gemini-1.5-flash",
+        model: SecretConfig.geminiModel,
         contents: prompt
     });
+
     return response.text;
 };

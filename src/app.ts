@@ -4,7 +4,8 @@ dotenv.config();
 import express from 'express';
 
 import router from "./router";
-import { configureCors } from "./config/cors";
+import { configureCors } from "./config/cors.config";
+import SecretConfig from "./config/secrets.config";
 
 const app = express();
 
@@ -19,6 +20,9 @@ app.use(express.json());
 // Router (this routes the requests)
 app.use("/api/v1/", router());
 app.get('/working', (_req, res) => res.json({ ok: true }));
+
+// Check secret configuration
+SecretConfig.validateConfig();
 
 // Local server
 if (process.env.NODE_ENV !== 'production') {

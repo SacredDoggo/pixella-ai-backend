@@ -1,12 +1,13 @@
 import express from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import dotenv from "dotenv";
+import SecretConfig from "../config/secrets.config";
 
 dotenv.config();
 
 export const isAuthenticated: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     try {
-        const authHeader = req.headers['authorization'];
+        const authHeader = req.headers['authorization']; // Will be removed in future versions
         const token: string | undefined = (req.cookies && req.cookies.token) || (authHeader && authHeader.split(' ')[1]); // Get the token from cookie or header
 
         if (!token) {
@@ -14,14 +15,14 @@ export const isAuthenticated: express.RequestHandler = async (req: express.Reque
             return;
         }
 
-        jwt.verify(token, process.env.JWT_SECRET!, (err, payLoad) => {
+        jwt.verify(token, SecretConfig.jwtSecret, (err, payLoad) => {
             if (err || !(payLoad && typeof payLoad === "object")) {
-                res.status(403).json({ message: 'Invalid or expired token' });
+                res.status(401).json({ message: 'Invalid or expired token' });
                 return;
             }
 
             if (!payLoad.userId || !payLoad.username || !payLoad.email) {
-                res.status(403).json({ message: 'Invalid token' });
+                res.status(401).json({ message: 'Invalid token' });
                 return;
             }
 

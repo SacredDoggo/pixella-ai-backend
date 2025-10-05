@@ -1,5 +1,5 @@
 import express from "express";
-import { login, logout, register } from "../controllers/authentication.controller";
+import { login, logout, register } from "../controller/authentication.controller";
 
 export default (router: express.Router) => {
     /**

@@ -1,6 +1,6 @@
 import express from "express";
 
-import { prisma } from "../config/prisma";
+import { prisma } from "../config/prisma.config";
 
 export const getAllUsers: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
     try {

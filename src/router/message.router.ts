@@ -1,6 +1,6 @@
 import express from "express";
-import {isAuthenticated, isChatOwner, isMessageOwner, validateId} from "../middlewares";
-import { changeUserMessageAndRegenerate, continueChat, deleteMessageById, regenerateResponse, startNewChatAndRespond } from "../controllers/message.controller";
+import {isAuthenticated, isChatOwner, isMessageOwner, validateId} from "../middleware";
+import { changeUserMessageAndRegenerate, continueChat, deleteMessageById, regenerateResponse, startNewChatAndRespond } from "../controller/message.controller";
 
 export default (router: express.Router) => {
     router.post("/message", isAuthenticated, startNewChatAndRespond);

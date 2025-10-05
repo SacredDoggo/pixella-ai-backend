@@ -1,6 +1,6 @@
 import express from "express";
-import { isAuthenticated, isChatOwner, validateId } from "../middlewares";
-import { getUserChats, deleteChatById, getChatHistoryById, startNewChat, updateChatById } from "../controllers/chat.controller";
+import { isAuthenticated, isChatOwner, validateId } from "../middleware";
+import { getUserChats, deleteChatById, getChatHistoryById, startNewChat, updateChatById } from "../controller/chat.controller";
 
 export default (router: express.Router) => {
     router.get("/chat", isAuthenticated, getUserChats);
