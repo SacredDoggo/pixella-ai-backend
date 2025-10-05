@@ -7,8 +7,12 @@ import jwt, { SignOptions } from "jsonwebtoken";
 
 import { prisma } from "../config/prisma.config";
 import SecretConfig from "../config/secrets.config";
+import { logger } from "../util/logger";
+import { LogConstants } from "../constant/log.constant";
 
 export const register: express.RequestHandler = async (req: express.Request, res: express.Response) => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [register] Controller invoked`);
+
     try {
         // Check if there is an request body
         if (!req.body) {
@@ -43,6 +47,7 @@ export const register: express.RequestHandler = async (req: express.Request, res
         }
 
         // Check if user already exists
+        logger.info(`${LogConstants.FLOW.EXECUTING} [prisma.user.findFirst] Checking if user exists`, { username, email });
         const existingUser = await prisma.user.findFirst({
             where: {
                 OR: [{ email }, { username }],
@@ -57,6 +62,7 @@ export const register: express.RequestHandler = async (req: express.Request, res
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user and password hash in a transaction
+        logger.info(`${LogConstants.FLOW.EXECUTING} [prisma.user.create] Creating new user`, { username, email });
         const user = await prisma.user.create({
             data: {
                 username,
@@ -69,16 +75,20 @@ export const register: express.RequestHandler = async (req: express.Request, res
             }
         });
 
+        logger.info(`${LogConstants.FLOW.COMPLETED} [register] Controller completed successfully`, { userId: user.id, username: user.username, email: user.email });
+
         res.sendStatus(201);
         return;
     } catch (error) {
-        console.error("Error during registration:", error);
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [register] Controller error`, { error });
         res.sendStatus(500);
         return;
     }
 }
 
 export const login: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [login] Controller invoked`);
+
     try {
         if (!req.body) {
             res.status(400).json({ error: "Bad Request: No body found" });
@@ -96,6 +106,7 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
         password = password.trim();
 
         // Find user by username or email, including their password hash
+        logger.info(`${LogConstants.FLOW.EXECUTING} [prisma.user.findUnique] Finding user by identifier`, { identifier });
         let user = null;
         if (identifier.includes("@")) {
             user = await prisma.user.findUnique({
@@ -125,6 +136,8 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
             { expiresIn: SecretConfig.jwtExpiresIn } as SignOptions
         );
 
+        logger.info(`${LogConstants.FLOW.COMPLETED} [login] Controller completed successfully`, { userId: user.id, username: user.username, email: user.email });
+
         res.cookie('token', token, {
             httpOnly: true,      // JS cannot read
             secure: true,        // Only over HTTPS
@@ -135,14 +148,17 @@ export const login: express.RequestHandler = async (req: express.Request, res: e
 
         return;
     } catch (error) {
-        console.error("Error during login:", error);
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [login] Controller error`, { error });
         res.sendStatus(500);
         return;
     }
 }
 
 export const logout: express.RequestHandler = async (req: express.Request, res: express.Response): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [logout] Controller invoked`);
+
     try {
+        logger.info(`${LogConstants.FLOW.COMPLETED} [logout] Controller completed successfully`);
         res
             .clearCookie('token', {
                 httpOnly: true,
@@ -152,8 +168,10 @@ export const logout: express.RequestHandler = async (req: express.Request, res: 
                 path: '/',
             })
             .sendStatus(200);
+            return;
     } catch (error) {
-        console.error("Error during logout:", error);
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [logout] Controller error`, { error });
         res.sendStatus(500);
+        return;
     }
 };

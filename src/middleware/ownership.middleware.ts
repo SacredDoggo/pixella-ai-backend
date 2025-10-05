@@ -1,7 +1,11 @@
 import express from "express";
 import { prisma } from "../config/prisma.config";
+import { logger } from "../util/logger";
+import { LogConstants } from "../constant/log.constant";
 
 export const isAccountOwner: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [isAccountOwner] Middleware invoked`);
+
     try {
         const id = req.params.user_id;
 
@@ -17,14 +21,18 @@ export const isAccountOwner: express.RequestHandler = async (req: express.Reques
             return;
         }
 
+        logger.info(`${LogConstants.FLOW.EXITING} [isAccountOwner] Middleware completed successfully`, { userId: req.user.userId, username: req.user.username, email: req.user.email });
         next();
     } catch (error) {
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [isAccountOwner] Middleware error`, { error });
         res.sendStatus(500);
         return;
     }
 }
 
 export const isChatOwner: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [isChatOwner] Middleware invoked`);
+
     try {
         const chatId = req.params.chat_id;
 
@@ -47,14 +55,19 @@ export const isChatOwner: express.RequestHandler = async (req: express.Request, 
             return;
         }
 
+        logger.info(`${LogConstants.FLOW.EXITING} [isChatOwner] Middleware completed successfully`, { userId: req.user.userId, username: req.user.username, email: req.user.email });
+
         next();
     } catch (error) {
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [isChatOwner] Middleware error`, { error });
         res.sendStatus(500);
         return;
     }
 }
 
 export const isMessageOwner: express.RequestHandler = async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [isMessageOwner] Middleware invoked`);
+
     try {
         const messageId = req.params.message_id;
 
@@ -77,8 +90,11 @@ export const isMessageOwner: express.RequestHandler = async (req: express.Reques
             return;
         }
 
+        logger.info(`${LogConstants.FLOW.EXITING} [isMessageOwner] Middleware completed successfully`, { userId: req.user.userId, username: req.user.username, email: req.user.email });
+
         next();
     } catch (error) {
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [isMessageOwner] Middleware error`, { error });
         res.sendStatus(500);
         return;
     }

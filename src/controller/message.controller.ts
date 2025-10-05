@@ -5,9 +5,13 @@ import { GenerateContentResponse, GoogleGenAI } from "@google/genai";
 import { createNewMessageService } from "../service/message.service";
 import { generateChatTitle, generateContextForAI, generateResponseService } from "../service/ai.service";
 import { ContextMessages } from "../types/generic.type";
+import { logger } from "../util/logger";
+import { LogConstants } from "../constant/log.constant";
 
 
 export const startNewChatAndRespond = async (req: express.Request, res: express.Response): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [startNewChatAndRespond] Controller invoked`);
+
     try {
         const userId = req.user.userId;
 
@@ -45,17 +49,20 @@ export const startNewChatAndRespond = async (req: express.Request, res: express.
 
         const aiMsg = await createNewMessageService(newChat.id, userId, "model", geminiResponse || "Error generating response, please try again later.", userMsg.id);
         
+        logger.info(`${LogConstants.FLOW.COMPLETED} [startNewChatAndRespond] Controller completed successfully`, { userId, chatId: newChat.id });
+
         res.status(201).json({ chat: newChat, messages: [userMsg, aiMsg] }).end();
         return;
     } catch (error) {
-        console.error("Error in startNewChatAndRespond:", error);
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [startNewChatAndRespond] Controller error`, { error });
         res.status(500).json({ message: "Internal server error" });
         return
     }
 }
 
-// TODO: Implement these controllers
 export const continueChat = async (req: express.Request, res: express.Response): Promise<void> => {
+    logger.info(`${LogConstants.FLOW.ENTERING} [continueChat] Controller invoked`);
+
     try {
         const chatId = req.params.chat_id;
 
@@ -95,14 +102,17 @@ export const continueChat = async (req: express.Request, res: express.Response):
 
         const aiMsg = await createNewMessageService(chatId, userId, "model", geminiResponse || "Error while generating response", userMsg.id);
 
+        logger.info(`${LogConstants.FLOW.COMPLETED} [continueChat] Controller completed successfully`, { userId, chatId });
+
         res.status(200).json({ messages: [userMsg, aiMsg] }).end();
         return;
     } catch (error) {
-        console.error("Error in continueChat:", error);
+        logger.error(`${LogConstants.ERROR_TYPES.INTERNAL} [continueChat] Controller error`, { error });
         res.status(500).json({ message: "Internal server error" });
     }
 };
 
+// TODO: Implement these controllers
 export const regenerateResponse = async (req: express.Request, res: express.Response): Promise<void> => {
     try {
         res.sendStatus(200);
